@@ -8,26 +8,27 @@ function readJSON () {
 	let dataJSON = fs.readFileSync(filePath, 'utf-8');
 	let arrayUsers;
 	if (dataJSON == '') {
-		let arrayUsers = [];
+		arrayUsers = [];
 	} else {
-		let arrayUsers = JSON.parse(dataJSON);
+		arrayUsers = JSON.parse(dataJSON);
 	}
 	return arrayUsers;
 }
 
 function generateID () {
 	let users = readJSON();
-	if (users.lenght == 0){
+	if (users == ''){
 		return 1;
+	} else {
+		let lastUser = users.pop();
+		return lastUser.id + 1;
 	}
-	let lastUser = users.pop();
-	return lastUser.id + 1;
 }
 
 function storeUser (dataUser){
 	let users = readJSON();
 	users.push(dataUser);
-	fs.writeFileSync(filePath, JSON.stringify(users, null, ''));
+	fs.writeFileSync(filePath, JSON.stringify(users, null, ' '));
 }
 
 const controller = {
@@ -36,7 +37,7 @@ const controller = {
 	},
 	storage: (req, res) => {
 		let newUser = {
-			id: generateID,
+			id: generateID(),
 			...req.body
 		};
 		storeUser(newUser);
